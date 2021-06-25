@@ -22,7 +22,7 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 });
 
 Route::any('webhook', function () {
-    return true;
+    $update = Telegram::commandsHandler(true);
 });
 
 Route::any('webhook/update', function () {
