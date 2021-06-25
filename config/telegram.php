@@ -36,7 +36,7 @@ return [
             'username'            => 'mertaexpensebot',
             'token'               => '1809759580:AAFWBxhSsg6LL4zw2oM1FD9OuSnt_NH1ZAg',
             'certificate_path'    => env('TELEGRAM_CERTIFICATE_PATH', 'YOUR-CERTIFICATE-PATH'),
-            // 'webhook_url'         => 'https://mertaexpensebot.herokuapp.com/api/webhook',
+            'webhook_url'         => 'http://mertaexpensebot.herokuapp.com/api/webhook',
             'commands'            => [
                 // TelegramCommand::class
             ],
@@ -57,7 +57,7 @@ return [
     | your default bot for regular use.
     |
     */
-    'default'                      => 'mertaexpensebot',
+    'default'                      => 'mybot',
 
     /*
     |--------------------------------------------------------------------------

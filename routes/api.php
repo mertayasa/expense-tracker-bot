@@ -22,6 +22,10 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 });
 
 Route::any('webhook', function () {
+    return true;
+});
+
+Route::any('webhook/update', function () {
     $updates = Telegram::getWebhookUpdates();
     dd($updates);
 });
