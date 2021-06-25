@@ -20,7 +20,7 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::post('webhook', function () {
+Route::get('webhook', function () {
     return true;
 });
 
