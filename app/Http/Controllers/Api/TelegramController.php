@@ -24,7 +24,7 @@ class TelegramController extends Controller{
         try{
             $user = $this->manageUser($data);
 
-            if(str_contains($chat_message, 'Author')){
+            if(str_contains($chat_message, 'Author') || str_contains($chat_message, '/author')){
                 return $this->showAuthor($user_id);
             }
 
@@ -32,15 +32,15 @@ class TelegramController extends Controller{
                 $this->repeatProccess($user->id);
             }
             
-            if(str_contains($chat_message, 'Expense')){
+            if(str_contains($chat_message, 'Expense') || str_contains($chat_message, '/expense')){
                 return $this->sendExpenseMessage($data, $user->id);
             }
 
-            if(str_contains($chat_message, 'Income')){
+            if(str_contains($chat_message, 'Income') || str_contains($chat_message, '/income')){
                 return $this->sendIncomeMessage($data, $user->id, $user_id);
             }
 
-            if(str_contains($chat_message, 'Report')){
+            if(str_contains($chat_message, 'Report') || str_contains($chat_message, '/report')){
                 return $this->sendReportMessage($data, $user->id, $user_id);
             }
 
