@@ -24,6 +24,10 @@ class TelegramController extends Controller{
         try{
             $user = $this->manageUser($data);
 
+            if(str_contains($chat_message, 'Author')){
+                return $this->showAuthor($user_id);
+            }
+
             if(str_contains($chat_message, '/repeat')){
                 $this->repeatProccess($user->id);
             }
@@ -92,7 +96,7 @@ class TelegramController extends Controller{
         
         $user_id = $data['message']['from']['id'];
 
-        $initial_text = 'Welcome '. $data['message']['from']['first_name']. ' '. $data['message']['from']['last_name'] .' 👏 to expense bot by @balimerta98, This bot is made for those of you who want to record your personal finances via telegram.';
+        $initial_text = 'Welcome '. $data['message']['from']['first_name']. ' '. $data['message']['from']['last_name'] .' 👏 to expense bot, This bot is made for those of you who want to record your personal finances via telegram.';
 
         // This will update the chat status to typing...
         Telegram::sendChatAction(['chat_id' => $user_id, 'action' => Actions::TYPING]);
@@ -101,7 +105,7 @@ class TelegramController extends Controller{
 
         $keyboard = [
             ['+ Expense 💸', '+ Income 💰'],
-            ['Check Report 📊']
+            ['Check Report 📊', 'Author 😎']
         ];
 
         $params = [
@@ -142,11 +146,11 @@ class TelegramController extends Controller{
             Telegram::sendMessage(['chat_id' => $telegram_user_id, 'text' => $initial_text]);
     
             $keyboard = [
-                ['+ House 💸', '+ Food 💰'],
-                ['+ Transportation 💸', '+ Study 💰'],
-                ['+ Hobby 💸', '+ Health 💰'],
-                ['+ Debt 💸', '+ Gone / Stolen 💰'],
-                ['Pray 📊']
+                ['+ House 🏠', '+ Food 🍽️'],
+                ['+ Transportation 🏎️', '+ Study 🎓'],
+                ['+ Hobby 🎮', '+ Health 🤒'],
+                ['+ Internet 📱', '+ Gone / Stolen 🤯'],
+                ['+ Giving 💗']
             ];
     
             $params = [
@@ -160,7 +164,7 @@ class TelegramController extends Controller{
             
             Telegram::sendMessage([
                 'chat_id' => $telegram_user_id, 
-                'text' => 'Please choose one of expense category below', 
+                'text' => 'Please choose one of expense category below 👇', 
                 'reply_markup' => $reply_markup
             ]);
 
@@ -205,7 +209,7 @@ class TelegramController extends Controller{
     public function sendInputExpenseMessage($data, $user_id, $telegram_user_id, $custom_message = null){
         Telegram::sendChatAction(['chat_id' => $telegram_user_id, 'action' => Actions::TYPING]);
 
-        $message = $custom_message ?? 'Great '. $data['message']['from']['first_name']. ' '. $data['message']['from']['last_name']. ' now please type amount of your expense';
+        $message = $custom_message ?? 'Great '. $data['message']['from']['first_name']. ' '. $data['message']['from']['last_name']. ' now please type amount of your expense 👇';
         Telegram::sendChatAction(['chat_id' => $telegram_user_id, 'action' => Actions::TYPING]);
     
         Telegram::sendMessage(['chat_id' => $telegram_user_id, 'text' => $message]);
@@ -247,7 +251,7 @@ class TelegramController extends Controller{
                     $this->updateUserStage($user_id, 1);
                 }
             }else{
-                $custom_message = 'Gezzz, please input a number not a text';
+                $custom_message = 'Gezzz 👿, please input a number not a text';
                 return $this->sendInputIncomeMessage($data,$telegram_user_id, $custom_message);
             }  
         }
@@ -256,7 +260,7 @@ class TelegramController extends Controller{
     public function sendInputIncomeMessage($data, $telegram_user_id, $custom_message = null){
         Telegram::sendChatAction(['chat_id' => $telegram_user_id, 'action' => Actions::TYPING]);
     
-        $message = $custom_message ?? 'Great '. $data['message']['from']['first_name']. ' '. $data['message']['from']['last_name']. ' now please type amount of your income';
+        $message = $custom_message ?? 'Great '. $data['message']['from']['first_name']. ' '. $data['message']['from']['last_name']. ' now please type amount of your income 👇';
         Telegram::sendChatAction(['chat_id' => $telegram_user_id, 'action' => Actions::TYPING]);
     
         Telegram::sendMessage(['chat_id' => $telegram_user_id, 'text' => $message]);
@@ -267,8 +271,9 @@ class TelegramController extends Controller{
         $expense_sum = Expense::where('user_id', $user_id)->sum('amount');
 
         $balance = $income_sum - $expense_sum;
+        $balance_text = $expense_sum >= $income_sum ? 'Balance 😰 : ' : 'Balance 🤑 : ' ;
 
-        $initial_text = 'Hello '. $data['message']['from']['first_name']. ' '. $data['message']['from']['last_name']. ' here is your report '. PHP_EOL .' Income : '. $income_sum .' '. PHP_EOL .' Expense : '. $expense_sum .' '. PHP_EOL .' Balance : '. $balance .' ';
+        $initial_text = 'Hello '. $data['message']['from']['first_name']. ' '. $data['message']['from']['last_name']. ' here is your report 📊'. PHP_EOL .'Income 💰 : '. $income_sum .' '. PHP_EOL .'Expense 💸 : '. $expense_sum .' '. PHP_EOL . $balance_text .''. $balance .' ';
         Telegram::sendChatAction(['chat_id' => $telegram_user_id, 'action' => Actions::TYPING]);
         Telegram::sendMessage(['chat_id' => $telegram_user_id, 'text' => $initial_text]);
     }
@@ -277,6 +282,12 @@ class TelegramController extends Controller{
         $user_stage = UserStage::where('user_id', $user_id)->get();
         $user_stage[0]->stage = 1;
         $user_stage[0]->update();
+    }
+
+    public function showAuthor($telegram_user_id){
+        $initial_text = 'https://github.com/mertayasa';
+        Telegram::sendChatAction(['chat_id' => $telegram_user_id, 'action' => Actions::TYPING]);
+        Telegram::sendMessage(['chat_id' => $telegram_user_id, 'text' => $initial_text]);
     }
 
 }
