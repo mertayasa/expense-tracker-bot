@@ -34,7 +34,7 @@ return [
     'bots'                         => [
         'mybot' => [
             'username'            => 'mertaexpensebot',
-            'token'               => '1809759580:AAFWBxhSsg6LL4zw2oM1FD9OuSnt_NH1ZAg',
+            'token'               => env('TELEGRAM_TOKEN'),
             'certificate_path'    => env('TELEGRAM_CERTIFICATE_PATH', 'YOUR-CERTIFICATE-PATH'),
             'webhook_url'         => '',
             'commands'            => [
